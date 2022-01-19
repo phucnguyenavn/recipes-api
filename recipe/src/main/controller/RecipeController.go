@@ -1,9 +1,11 @@
 package controller
 
 import (
+	"encoding/json"
 	"ex.recipes/recipe/src/main/model"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/xid"
+	"io/ioutil"
 	"net/http"
 	"time"
 )
@@ -40,4 +42,7 @@ var recipes []model.Recipe
 
 func init() {
 	recipes = make([]model.Recipe, 0)
+	file, _ := ioutil.ReadFile("recipe/src/main/recipes.json")
+
+	_ = json.Unmarshal(file, &recipes)
 }
