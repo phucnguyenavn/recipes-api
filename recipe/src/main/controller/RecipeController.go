@@ -1,16 +1,19 @@
 package controller
 
 import (
+	"encoding/json"
 	"ex.recipes/recipe/src/main/model"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/xid"
+	"io/ioutil"
 	"net/http"
 	"time"
 )
 
 func NewRecipeHandler(c *gin.Context) {
 	var recipe model.Recipe
-	if err := c.ShouldBindJSON(&recipe); err != nil {
+	err := c.ShouldBindJSON(&recipe)
+	if err != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{
 
@@ -20,9 +23,8 @@ func NewRecipeHandler(c *gin.Context) {
 
 	}
 
-	recipe.SetId(xid.New().String())
-
-	recipe.SetPublishedAt(time.Now())
+	recipe.ID = xid.New().String()
+	recipe.PublishedAt = time.Now()
 
 	recipes = append(recipes, recipe)
 
@@ -30,8 +32,17 @@ func NewRecipeHandler(c *gin.Context) {
 
 }
 
+func ListRecipesHandler(c *gin.Context) {
+
+	c.JSON(http.StatusOK, recipes)
+
+}
+
 var recipes []model.Recipe
 
 func init() {
 	recipes = make([]model.Recipe, 0)
+	file, _ := ioutil.ReadFile("recipe/src/main/recipes.json")
+
+	_ = json.Unmarshal(file, &recipes)
 }
