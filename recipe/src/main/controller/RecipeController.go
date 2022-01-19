@@ -7,6 +7,7 @@ import (
 	"github.com/rs/xid"
 	"io/ioutil"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -112,6 +113,40 @@ func DeleteRecipeHandler(c *gin.Context) {
 
 		"message": "Recipe has been deleted",
 	})
+}
+
+func SearchRecipesHandler(c *gin.Context) {
+
+	tag := c.Query("tag")
+
+	listOfRecipes := make([]model.Recipe, 0)
+
+	for i := 0; i < len(recipes); i++ {
+
+		found := false
+
+		for _, t := range recipes[i].Tags {
+
+			if strings.EqualFold(t, tag) {
+
+				found = true
+
+			}
+
+		}
+
+		if found {
+
+			listOfRecipes = append(listOfRecipes,
+
+				recipes[i])
+
+		}
+
+	}
+
+	c.JSON(http.StatusOK, listOfRecipes)
+
 }
 
 var recipes []model.Recipe
