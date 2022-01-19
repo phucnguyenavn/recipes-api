@@ -9,5 +9,6 @@ func main() {
 
 	router := gin.Default()
 	router.POST("/recipes", controller.NewRecipeHandler)
+	router.GET("/recipes", controller.ListRecipesHandler)
 	router.Run()
 }

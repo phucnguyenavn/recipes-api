@@ -10,7 +10,8 @@ import (
 
 func NewRecipeHandler(c *gin.Context) {
 	var recipe model.Recipe
-	if err := c.ShouldBindJSON(&recipe); err != nil {
+	err := c.ShouldBindJSON(&recipe)
+	if err != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{
 
@@ -20,13 +21,18 @@ func NewRecipeHandler(c *gin.Context) {
 
 	}
 
-	recipe.SetId(xid.New().String())
-
-	recipe.SetPublishedAt(time.Now())
+	recipe.ID = xid.New().String()
+	recipe.PublishedAt = time.Now()
 
 	recipes = append(recipes, recipe)
 
 	c.JSON(http.StatusOK, recipe)
+
+}
+
+func ListRecipesHandler(c *gin.Context) {
+
+	c.JSON(http.StatusOK, recipes)
 
 }
 
